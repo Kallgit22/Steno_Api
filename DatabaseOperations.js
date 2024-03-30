@@ -25,7 +25,6 @@ class DatabaseOperations {
     insert(data) {
         try {
             const status = this.model.create(data);
-            console.log('Document inserted:', status);
             return status;
         } catch (error) {
             console.error('Error inserting document:', error);
@@ -35,7 +34,6 @@ class DatabaseOperations {
     deleteStatus(query) {
         try {
             const result = this.model.deleteOne({email:query});
-            console.log(`${result.deletedCount} document(s) deleted`);
             return result;
         } catch (error) {
             console.error('Error deleting documents:', error);

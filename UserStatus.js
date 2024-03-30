@@ -12,44 +12,84 @@ const PORT = process.env.PORT || 4000;
 const dbOperations = new DatabaseOperations("username","password");
 dbOperations.connect(url,"Stenoexpert","UserAccountStatus",schema());
 
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
-app.post('/Status/setStatus',async function (req, res) {
-
-    const userAccount = {
-        email: req.body.email,
-    };
-    const id = await dbOperations.insert(userAccount);
-    return res.send(id);
+// Route handlers
+app.post('/Status/setStatus', async function (req, res) {
+    try {
+        const userAccount = {
+            email: req.body.email,
+        };
+        const result = await dbOperations.insert(userAccount);
+        if (result._id) {
+            return res.status(200).json({ status: 'success'});
+        } else {
+            return res.status(500).json({ status: 'error',message:"Uknown Error" });
+        }
+        
+    } catch (error) {
+        return res.status(500).json({ status: 'error', message: 'Internal server error',error:error });
+    }
 });
 
-app.post('/Status/getStatus',async function (req, res) {
-    const email = req.body.email;
-    const result = await dbOperations.get(email);
-    console.log(result);
-    return res.send(result);
+app.post('/Status/getStatus', async function (req, res) {
+    try {
+        const email = req.body.email;
+        const result = await dbOperations.get(email);
+        if (result) {
+            return res.json({ status: 'success', data: result });
+        } else {
+            return res.status(404).json({ status: 'error', message: 'Data not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ status: 'error', message: 'Internal server error',error:error });
+    }
 });
 
-app.post('/Status/updateStatus',async function (req, res) {
-
-    const data = req.body;
-    const status = await dbOperations.update(data);
-    console.log(status);
-    return res.send(status);
+app.post('/Status/updateStatus', async function (req, res) {
+    try {
+        const data = req.body;
+        const status = await dbOperations.update(data);
+        if (status) {
+            return res.status(200).json({ status: 'success'});
+        } else {
+            return res.status(500).json({ status: 'error', message:"Status not updated" });
+        }
+        
+    } catch (error) {
+        return res.status(500).json({ status: 'error', message: 'Internal server error',error:error });
+    }
 });
 
-app.post('/Status/delete',async function(req,res) {
-    const data = req.body;
-    const result = await dbOperations.delete(data);
-    return res.send(result)
-})
-
-app.post('/Status/deleteStatus',async function (req, res) {
-
-    const {email} = req.body;
-    const result = await dbOperations.deleteStatus(email);
-    console.log(result);
-    return res.send(result);
+app.post('/Status/delete', async function (req, res) {
+    try {
+        const data = req.body;
+        const result = await dbOperations.delete(data);
+        if (result) {
+            return res.status(200).json({ status: 'success'});
+        } else {
+            return res.status(500).json({ status: 'error', message:"Status not updated" });
+        }
+    } catch (error) {
+        return res.status(500).json({ status: 'error', message: 'Internal server error',error:error });
+    }
 });
 
-app.listen(PORT, () => { console.log(`Server Listen on PORT: ${PORT}`); });
+app.post('/Status/deleteStatus', async function (req, res) {
+    try {
+        const { email } = req.body;
+        const result = await dbOperations.deleteStatus(email);
+        if (result) {
+            return res.status(200).json({ status: 'success'});
+        } else {
+            return res.status(500).json({ status: 'error', message:"Status not updated" });
+        }
+    } catch (error) {
+        return res.status(500).json({ status: 'error', message: 'Internal server error',error:error });
+    }
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server Listen on PORT: ${PORT}`);
+});
