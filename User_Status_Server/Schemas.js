@@ -17,13 +17,15 @@ function userStatusSchema() {
         myFavCourseList: [{
             _id: false,
             courseId: {
-                type: Number
+                type: Number,
+                unique:true
             }
         }],
         myCartCourseList: [{
             _id: false,
             courseId: {
-                type: Number
+                type: Number,
+                unique:true
             }
         }],
         myFavVideoList: {
@@ -47,6 +49,7 @@ function userStatusSchema() {
 
 function Course() {
     const CourseSchema = new mongoose.Schema({
+        _id: false,
         id: {
             type: Number,
             unique:true,

@@ -2,25 +2,25 @@ const mongoose = require('mongoose');
 const Schema = require('./Schemas');
 
 class DatabaseOperations {
-    constructor(username,password) {
+    constructor(username, password) {
         this.model = null;
         this.model2 = null;
         this.Username = username;
         this.Password = password;
     }
 
-    connect(url,databasename,collectionName,schema) {
+    connect(url, databasename, collectionName, schema) {
         try {
-            mongoose.connect(url+`/${databasename}`, { useNewUrlParser: true, useUnifiedTopology: true });
-            this.model = mongoose.model(collectionName,schema);
-            this.model2 = mongoose.model("Course",Schema.Course());
+            mongoose.connect(url + `/${databasename}`, { useNewUrlParser: true, useUnifiedTopology: true });
+            this.model = mongoose.model(collectionName, schema);
+            this.model2 = mongoose.model("Course", Schema.Course());
             console.log('Connected to MongoDB');
         } catch (error) {
             console.error('Error connecting to MongoDB:', error);
         }
     }
 
-     close() {
+    close() {
         mongoose.connection.close();
         console.log('Disconnected from MongoDB');
     }
@@ -36,7 +36,7 @@ class DatabaseOperations {
 
     async deleteStatus(query) {
         try {
-            const result = await this.model.deleteOne({email:query});
+            const result = await this.model.deleteOne({ email: query });
             return result;
         } catch (error) {
             console.error('Error deleting documents:', error);
@@ -46,7 +46,7 @@ class DatabaseOperations {
     async update(data) {
         try {
             let updateQuery;
-            switch(data.field) {
+            switch (data.field) {
                 case "myFavCourseList":
                     updateQuery = { $push: { myFavCourseList: { courseId: data.courseId } } };
                     break;
@@ -63,7 +63,7 @@ class DatabaseOperations {
                     console.error("Invalid field specified for delete operation");
                     return null;
             }
-    
+
             const result = await this.model.updateOne({ email: data.email }, updateQuery);
             return result;
         } catch (error) {
@@ -72,9 +72,9 @@ class DatabaseOperations {
         }
     }
 
-    async get(email){
+    async get(email) {
         try {
-            const result = await this.model.findOne({email:email});
+            const result = await this.model.findOne({ email: email });
             return result;
         } catch (error) {
             return error;
@@ -109,12 +109,12 @@ class DatabaseOperations {
             return { success: false, message: 'Error fetching data' };
         }
     }
-    
+
 
     async delete(data) {
         try {
             let updateQuery;
-            switch(data.field) {
+            switch (data.field) {
                 case "myFavCourseList":
                     updateQuery = { $pull: { myFavCourseList: { courseId: data.courseId } } };
                     break;
@@ -131,7 +131,7 @@ class DatabaseOperations {
                     console.error("Invalid field specified for delete operation");
                     return null;
             }
-    
+
             const result = await this.model.updateOne({ email: data.email }, updateQuery);
             return result;
         } catch (error) {
@@ -139,7 +139,7 @@ class DatabaseOperations {
             return null;
         }
     }
-    
+
 }
 
 module.exports = DatabaseOperations;

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 function Course() {
     const CourseSchema = new mongoose.Schema({
+        _id: false,
         id: {
             type: Number,
             unique:true,

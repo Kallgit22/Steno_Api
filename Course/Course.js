@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 
 app.post('/addCourse',async function(req,res) {
 
-    const {id,title,time,test,question,author,price} = req.body;
+    const {id,title,time,test,question,author,price,description} = req.body;
     const courseData = {
         id:id,
         title: title,
@@ -29,7 +29,8 @@ app.post('/addCourse',async function(req,res) {
         test: test,
         question: question,
         author:author,
-        price:price
+        price:price,
+        description:description
     }
     try {
         let result = await dbOperations.addCourse(courseData);
